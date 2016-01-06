@@ -8,44 +8,55 @@ body {
   line-height: 1;
 }
 table {
+  margin: 0;
+  padding: 0;
   border-collapse: collapse;
   border-spacing: 0;
 }
 
-/* Typography, responsive font sizes */
+/* Basic typography */
 
 html {
   font-size: 100%;
   font-family: sans-serif;
   font-weight: 300;
 }
+
+/* Responsive font sizes */
+
 @media (min-width:  480px) { html { font-size: 1.1em; } }
 @media (min-width:  520px) { html { font-size: 1.2em; } }
 @media (min-width:  600px) { html { font-size: 1.3em; } }
-@media (min-width:  800px) { html { font-size: 1.5em; } }
-@media (min-width:  960px) { html { font-size: 1.7em; } }
-@media (min-width: 1040px) { html { font-size: 1.8em; } }
+@media (min-width:  800px) { html { font-size: 1.4em; } }
+@media (min-width:  960px) { html { font-size: 1.5em; } }
+@media (min-width: 1040px) { html { font-size: 1.7em; } }
 @media (min-width: 1128px) { html { font-size: 1.9em; } }
 @media (min-width: 1200px) { html { font-size:   2em; } }
 
-/* Day/Night modes, inverse colors */
+/* Day/night modes (inverse) */
 
 body.night,
 body.day {
-  -webkit-transition: background-color .3s linear;
-     -moz-transition: background-color .3s linear;
-       -o-transition: background-color .3s linear;
-      -ms-transition: background-color .3s linear;
-          transition: background-color .3s linear;
+  transition: background-color .3s linear;
 }
 body.night {
-  background: #4a4a4a;
-  color: #f1f1f1;
+  background: #2d3037;
+  color: #a9adbb;
 }
 body.day {
-  background: #fff;
-  color: #222;
+  background: #ffffff;
+  color: #222222;
 }
+
+/* Day/night table colors */
+
+body.night main > table { border-color: #40424b; }
+body.day   main > table { border-color: #dcdcdc; }
+
+/* TODO: Striping?
+body.night main > table thead    { background: #32353f; }
+body.night main > table tbody tr { background: #27292f; }
+body.day   main > table tr       { background: #f1f1f1; } */
 
 /* Main page layout */
 
@@ -59,12 +70,13 @@ section {
   padding: .1em;
 }
 
+/* Header, with controls */
+
 header {
   font-size: 50%;
   padding: 1em;
   text-align: right;
 }
-
 header > ul {
   list-style: none;
   margin: 0;
@@ -76,7 +88,68 @@ header > ul > li {
   vertical-align: middle;
 }
 
+/* Main table content container */
+
 main {
+  overflow-x: auto;
+}
+
+
+/* The Tabor Table! */
+
+main > table {
+  width: 100%;
+  border: 1px solid;
+  border-color: inherit;
+}
+main > table tr {
+  border: 1px solid;
+  border-color: inherit;
+  padding: .2em;
+}
+main > table th,
+main > table td {
+  padding: .6em;
+  text-align: center;
+}
+main > table th {
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Responsive table, for small viewports
+   Based on a Code Pen by Captain Anonymous
+   http://codepen.io/anon/pen/QwPVNW */
+
+@media (max-width: 600px) {
+  main > table {
+    border: 0;
+  }
+  main > table thead {
+    display: none;
+  }
+  main > table tr {
+    margin-bottom: 1em;
+    display: block;
+    border: 1px solid;
+    border-color: inherit;
+  }
+  main > table td {
+    display: block;
+    text-align: right;
+    border-bottom: 1px dotted;
+    border-color: inherit;
+    padding: .6em;
+  }
+  main > table td:last-child {
+    border-bottom: 0;
+  }
+  main > table td:before {
+    content: attr(data-label);
+    float: left;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
 }
 
 /*  Pure CSS toggle buttons
@@ -125,7 +198,8 @@ main {
       -ms-user-select: none;
           user-select: none;
 }
-.tgl + .tgl-btn:after, .tgl + .tgl-btn:before {
+.tgl + .tgl-btn:after,
+.tgl + .tgl-btn:before {
   position: relative;
   display: block;
   content: "";
@@ -145,14 +219,12 @@ main {
   background: #f0f0f0;
   border-radius: 2em;
   padding: 2px;
-  -webkit-transition: all .4s ease;
   transition: all .4s ease;
 }
 .tgl-light + .tgl-btn:after {
   border-radius: 50%;
   background: #fff;
-  -webkit-transition: all .175s ease;
-  transition: all .175s ease;
+  transition: all .2s ease;
 }
 .tgl-light:checked + .tgl-btn {
   background: #9FD6AE;

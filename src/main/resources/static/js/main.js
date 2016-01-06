@@ -11,4 +11,8 @@
     toggleDayNight: _toggleDayNight
   };
 
+  /* Triggering initial toggle on load, will reset the mode based on checkbox
+     state - which is handled differently by different browsers. */
+  _toggleDayNight();
+
 })(window);
