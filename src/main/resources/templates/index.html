@@ -20,6 +20,15 @@
       </li>
     </ul>
   </header>
+  {{#tables}}
+  <section>
+    <select>
+      {{#.}}
+      <option>{{name}}</option>
+      {{/.}}
+    </select>
+  </section>
+  {{/tables}}
   <main>
     <table>
       <thead>

@@ -1,5 +1,5 @@
 
-CREATE TABLE `pet` (
+CREATE TABLE IF NOT EXISTS `pet` (
   `name` varchar(20) DEFAULT NULL,
   `owner` varchar(20) DEFAULT NULL,
   `species` varchar(20) DEFAULT NULL,

@@ -37,7 +37,7 @@ public class IndexTest {
 	@Test
 	public void ensureHasTablesCollection() throws Exception {
 		
-		when(tableService.getTables()).thenReturn(Arrays.asList(new Table()));
+		when(tableService.getTables()).thenReturn(Arrays.asList(new Table("foo")));
 		
 		mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(model().attributeExists("tables"))
 				.andExpect(view().name("index"));
