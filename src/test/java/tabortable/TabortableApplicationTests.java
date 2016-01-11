@@ -1,4 +1,4 @@
-package com.studiomediatech;
+package tabortable;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +16,7 @@ public class TabortableApplicationTests {
 
 	@Test
 	public void contextLoads() {
+		// OK
 	}
 
 }
