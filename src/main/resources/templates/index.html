@@ -20,28 +20,34 @@
       </li>
     </ul>
   </header>
-  {{#tables}}
   <section>
     <select>
-      {{#.}}
+      {{#tables}}
       <option>{{name}}</option>
-      {{/.}}
+      {{/tables}}
     </select>
   </section>
-  {{/tables}}
   <main>
+    {{#table}}
     <table>
       <thead>
         <tr>
-          <th>label</th>
+          {{#columns}}
+          <th>{{name}}</th>
+          {{/columns}}
         </tr>
       </thead>
       <tbody>
+        {{#rows}}
         <tr>
-          <td data-label="label">value</td>
+          {{#columns}}
+          <td data-label="{{name}}" class="{{type}}">{{{value}}}</td>
+          {{/columns}}
         </tr>
+        {{/rows}}
       </tbody>
     </table>
+    {{/table}}
   </main>
   <script src="js/main.js"></script>
 </body>

@@ -36,13 +36,18 @@ public class IndexTest {
 
 	@Test
 	public void ensureHasTablesCollection() throws Exception {
-		
-		when(tableService.getTables()).thenReturn(Arrays.asList(new Table("foo")));
-		
-		mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(model().attributeExists("tables"))
+
+		Table t1 = new Table("foo");
+		Table t2 = new Table("foo");
+
+		when(tableService.getTables()).thenReturn(Arrays.asList(t1, t2));
+		when(tableService.getDefaultTable()).thenReturn(t1);
+
+		mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(model().attributeExists("tables", "table"))
 				.andExpect(view().name("index"));
-		
+
 		verify(tableService).getTables();
+		verify(tableService).getDefaultTable();
 	}
 
 }

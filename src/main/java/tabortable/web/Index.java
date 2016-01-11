@@ -21,6 +21,7 @@ public class Index {
 	public String index(Model model) {
 
 		model.addAttribute("tables", tableService.getTables());
+		model.addAttribute("table", tableService.getDefaultTable());
 
 		return "index";
 	}
