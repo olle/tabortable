@@ -1,6 +1,8 @@
 Tabor Table
 ===========
 
+[![Build Status](https://travis-ci.org/olle/tabortable.svg)](https://travis-ci.org/olle/tabortable)
+
 > You have database? Tabor knows. You have data tables?
   Tabor knows. You have, many many questions - what is in
   data? Tabor knows!
@@ -11,4 +13,3 @@ Tabor Table
   data is. Database. Tables. Nooo problem.
 
 > Tabor explain...
-
