@@ -1,11 +1,9 @@
 package tabortable.web;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
 
@@ -39,7 +37,6 @@ public class IndexTest {
 
 		Table t1 = new Table("foo");
 		Table t2 = new Table("foo");
-
 		when(tableService.getTables()).thenReturn(Arrays.asList(t1, t2));
 		when(tableService.getDefaultTable()).thenReturn(t1);
 
@@ -48,6 +45,22 @@ public class IndexTest {
 
 		verify(tableService).getTables();
 		verify(tableService).getDefaultTable();
+	}
+
+	@Test
+	public void ensureHandlesTableParameter() throws Exception {
+
+		Table t1 = new Table("foo");
+		Table t2 = new Table("foo");
+		when(tableService.getTables()).thenReturn(Arrays.asList(t1, t2));
+		when(tableService.getTable(anyString())).thenReturn(t2);
+
+		mockMvc.perform(get("/").param("t", "some-table")).andExpect(status().isOk())
+				.andExpect(model().attributeExists("table", "tables")).andExpect(view().name("index"));
+
+		verify(tableService).getTables();
+		verify(tableService).getTable("some-table");
+
 	}
 
 }

@@ -71,15 +71,17 @@ public interface TableService {
 		public Table getDefaultTable() {
 
 			final Table table = getTables().get(0);
+			populate(table);
+			return table;
+		}
 
+		private void populate(final Table table) {
 			new JdbcTemplate(dataSource).query("SELECT * FROM " + table.name + " LIMIT 100", (rs) -> {
 				ResultSetMetaData metaData = rs.getMetaData();
 				int columnCount = metaData.getColumnCount();
 				readRows(rs, metaData, columnCount, table);
 				readColumns(metaData, columnCount, table);
 			});
-
-			return table;
 		}
 
 		private void readRows(ResultSet rs, ResultSetMetaData metaData, int columns, Table table) {
@@ -115,8 +117,19 @@ public interface TableService {
 
 		}
 
+		@Override
+		public Table getTable(String name) {
+
+			final Table table = getTables().stream().filter((t) -> name.equals(t.name)).findFirst()
+					.orElseThrow(() -> new RuntimeException(String.format("No table called '%s' found.", name)));			
+			populate(table);
+			return table;
+		}
+
 	}
 
 	Table getDefaultTable();
+
+	Table getTable(String name);
 
 }
