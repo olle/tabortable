@@ -44,8 +44,8 @@ body.night {
   color: #a9adbb;
 }
 body.day {
-  background: #ffffff;
-  color: #222222;
+  background: #fdfdfd;
+  color: #536370;
 }
 
 /* Day/night table colors */
@@ -60,16 +60,23 @@ body.day   main > table tr       { background: #f1f1f1; } */
 
 /* Data types coloring */
 
-body.night .date    { color: #80b4c2; }
-body.night .integer { color: #c09a61; }
-body.night .varchar { color: #c16d74; }
-body.night .char    { color: #ae77e0; }
+.date    { color: #80b4c2; }
+.integer { color: #c09a61; }
+.varchar { color: #c16d74; }
+.char    { color: #ae77e0; }
 
 body.night .date:before,
 body.night .integer:before,
 body.night .varchar:before,
 body.night .char:before {
   color: #a9adbb;
+}
+
+body.day .date:before,
+body.day .integer:before,
+body.day .varchar:before,
+body.day .char:before {
+  color: #536370;
 }
 
 /* Main page layout */
@@ -154,13 +161,13 @@ main > table th {
     display: block;
     border: 1px solid;
     border-color: inherit;
+    padding: 0;
   }
   main > table td {
     display: block;
     text-align: right;
-    border-bottom: 1px dotted;
+    border-bottom: 1px dashed;
     border-color: inherit;
-    padding: .6em;
   }
   main > table td:last-child {
     border-bottom: 0;
