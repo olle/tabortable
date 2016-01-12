@@ -23,13 +23,14 @@ public class Index {
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String index(@RequestParam(name = "t", required = false) String tableName, Model model) {
+	public String index(@RequestParam(name = "t", required = false) String table, Model model) {
 
-		model.addAttribute("tables", tableService.getTables());
-		model.addAttribute("table", Optional.ofNullable(tableName).map((t) -> tableService.getTable(t))
-				.orElse(tableService.getDefaultTable()));
+		Optional<String> maybeSelected = Optional.ofNullable(table);
+
+		model.addAttribute("tables", tableService.getTables(maybeSelected));
+		model.addAttribute("table", maybeSelected.map(tableService::getTable).orElseGet(tableService::getDefaultTable));
 
 		return "index";
 	}
-	
+
 }

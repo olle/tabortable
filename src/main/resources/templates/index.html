@@ -21,13 +21,17 @@
     </ul>
   </header>
   <section>
-    <form>
-      <select name="t" onchange="this.form.submit();">
-        {{#tables}}
-        <option>{{name}}</option>
-        {{/tables}}
-      </select>
-    </form>
+    <ul>
+      <li>
+        <form>
+          <select name="t" onchange="this.form.submit();">
+            {{#tables}}
+            <option {{selected}}>{{name}}</option>
+            {{/tables}}
+          </select>
+        </form>
+      </li>
+    </ul>
   </section>
   <main>
     {{#table}}

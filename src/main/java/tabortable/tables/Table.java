@@ -7,12 +7,14 @@ import java.util.stream.Collectors;
 public class Table {
 
 	public final String name;
+	public final String selected;
 	private List<Row> rows = new ArrayList<>();
 	private List<Column> header = new ArrayList<>();
-
-	public Table(String name) {
+	
+	public Table(String name, boolean selected) {
 
 		this.name = name;
+		this.selected = selected ? "selected" : "";
 	}
 
 	public List<Row> getRows() {
