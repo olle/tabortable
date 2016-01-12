@@ -21,11 +21,13 @@
     </ul>
   </header>
   <section>
-    <select>
-      {{#tables}}
-      <option>{{name}}</option>
-      {{/tables}}
-    </select>
+    <form method="post">
+      <select name="table" onchange="this.form.submit();">
+        {{#tables}}
+        <option>{{name}}</option>
+        {{/tables}}
+      </select>
+    </form>
   </section>
   <main>
     {{#table}}
