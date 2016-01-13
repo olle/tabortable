@@ -1,0 +1,12 @@
+
+#spring:
+#  datasource:
+#   TODO: Specify your datasource here!
+---
+
+spring:
+  profiles: demo
+  datasource:
+    driver-class-name: org.h2.Driver
+    schema: classpath:demo-schema.sql
+    data:   classpath:demo-data.sql

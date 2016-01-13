@@ -10,7 +10,7 @@ public class Table {
 	public final String selected;
 	private List<Row> rows = new ArrayList<>();
 	private List<Column> header = new ArrayList<>();
-	
+
 	public Table(String name, boolean selected) {
 
 		this.name = name;
@@ -42,37 +42,6 @@ public class Table {
 	public void addColumn(String name, String type) {
 
 		header.add(new Column(name, type));
-	}
-
-	public static final class Row {
-
-		public final List<Column> columns;
-
-		public Row(List<Column> columns) {
-
-			this.columns = columns;
-		}
-
-	}
-
-	public static final class Column {
-
-		public final String name;
-		public final String type;
-		public final String value;
-
-		public Column(String name, String type) {
-
-			this(name, type, "");
-		}
-
-		public Column(String name, String type, String value) {
-
-			this.name = name;
-			this.type = type;
-			this.value = value;
-		}
-
 	}
 
 }
