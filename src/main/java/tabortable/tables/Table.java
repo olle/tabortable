@@ -44,4 +44,10 @@ public class Table {
 		header.add(new Column(name, type));
 	}
 
+	@Override
+	public String toString() {
+
+		return String.format("%s '%s' %s", getClass().getSimpleName(), name, selected);
+	}
+
 }

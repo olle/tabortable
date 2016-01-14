@@ -1,6 +1,5 @@
 package tabortable.tables;
 
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -12,22 +11,30 @@ import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.DatabaseMetaDataCallback;
-import org.springframework.jdbc.support.JdbcUtils;
-import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.stereotype.Service;
 
+import tabortable.database.DatabaseService;
+
+/**
+ * Simple service implementation, providing table listing and querying.
+ */
 @Service
 class TableServiceImpl implements TableService {
 
+	private final static Logger LOG = LoggerFactory.getLogger(TableServiceImpl.class);
+
 	private final DataSource dataSource;
+	private final DatabaseService databaseService;
 
 	@Autowired
-	public TableServiceImpl(DataSource dataSource) {
+	public TableServiceImpl(DataSource dataSource, DatabaseService databaseService) {
 
 		this.dataSource = dataSource;
+		this.databaseService = databaseService;
 	}
 
 	@Override
@@ -37,36 +44,13 @@ class TableServiceImpl implements TableService {
 	}
 
 	@Override
-	public List<Table> getTables(Optional<String> maybeSelectedTable) {
+	public List<Table> getTables(final Optional<String> maybeSelectedTable) {
 
-		final List<String> results = new ArrayList<>();
-
-		try {
-			JdbcUtils.extractDatabaseMetaData(dataSource, new DatabaseMetaDataCallback() {
-
-				@Override
-				public Object processMetaData(DatabaseMetaData dbmd) throws SQLException, MetaDataAccessException {
-
-					ResultSet rs = dbmd.getTables(null, null, null, null);
-					while (rs.next()) {
-						results.add(rs.getObject(2) + ":" + rs.getObject(3));
-					}
-					return null;
-				}
-			});
-
-			return results.stream().filter((r) -> r.startsWith("PUBLIC:")).map((r) -> r.split(":")[1]).map((s) -> {
-				String tableName = s.toString();
-				Boolean selected = maybeSelectedTable.map((t) -> tableName.equals(t)).orElse(false);
-				return new Table(tableName, selected);
-			}).collect(Collectors.toList());
-
-		} catch (MetaDataAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
+		return databaseService.getPublicTableNames().stream().map(n -> {
+			Table table = new Table(n, maybeSelectedTable.map(s -> n.equals(s)).orElse(false));
+			LOG.debug("Found {}", table);
+			return table;
+		}).collect(Collectors.toList());
 	}
 
 	@Override
