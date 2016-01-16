@@ -28,10 +28,20 @@ public class Table {
 	}
 
 	private Column tripleToColumn(List<Object> col) {
-		String name = col.get(0).toString();
-		String type = col.get(1).toString();
-		String value = col.get(2) == null ? "null" : col.get(2).toString();
+		String name = getValueOrNullAsString(col, 0);
+		String type = getValueOrNullAsString(col, 1);
+		String value = getValueOrNullAsString(col, 2);
 		return new Column(name, type, value);
+	}
+
+	/**
+	 * Retrieves the value from the given object list by index
+	 * @param objects holding the values to retrieve
+	 * @param index of the value to fetch
+	 * @return the value as returned by a call {@code toString}, or the string {@code "null"}.
+	 */
+	public static String getValueOrNullAsString(List<Object> objects, int index) {
+		return objects.get(index) == null ? "null" : objects.get(index).toString();
 	}
 
 	public List<Column> getColumns() {
