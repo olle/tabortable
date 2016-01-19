@@ -4,9 +4,9 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
@@ -17,21 +17,63 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import tabortable.database.DatabaseService;
+import tabortable.query.QueryService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TableServiceImplTest {
 
 	@Mock
-	private DataSource dataSource;
-	@Mock
 	DatabaseService databaseService;
+	@Mock
+	QueryService queryService;
 
-	private TableServiceImpl service;
+	TableServiceImpl service;
 
 	@Before
 	public void setup() {
 
-		service = new TableServiceImpl(dataSource, databaseService);
+		service = new TableServiceImpl(databaseService, queryService);
+	}
+
+	@Test
+	public void ensureFetchesFirstFoundTable() throws Exception {
+
+		when(databaseService.getPublicTableNames()).thenReturn(Arrays.asList("foo", "bar", "baz"));
+		when(queryService.selectAsteriskFrom(any())).thenAnswer(i -> i.getArguments()[0]);
+
+		Table table = service.findFirstTable().get();
+
+		assertEquals("Wrong table name", "foo", table.name);
+
+		verify(databaseService).getPublicTableNames();
+		verify(queryService).selectAsteriskFrom(table);
+	}
+
+	@Test
+	public void ensureReturnsEmptyOptionalForMissingTables() throws Exception {
+
+		when(databaseService.getPublicTableNames()).thenReturn(Collections.emptyList());
+
+		Optional<Table> noTable = service.findFirstTable();
+
+		assertFalse("Must not be found", noTable.isPresent());
+
+		verify(databaseService).getPublicTableNames();
+		verifyNoMoreInteractions(queryService);
+	}
+
+	@Test
+	public void ensureFetchesTableByName() throws Exception {
+
+		when(databaseService.getPublicTableNames()).thenReturn(Arrays.asList("foo", "bar", "baz"));
+		when(queryService.selectAsteriskFrom(any())).thenAnswer(i -> i.getArguments()[0]);
+
+		Table table = service.findTable("baz").get();
+
+		assertEquals("Wrong table name", "baz", table.name);
+
+		verify(databaseService).getPublicTableNames();
+		verify(queryService).selectAsteriskFrom(table);
 	}
 
 	@Test
@@ -39,7 +81,7 @@ public class TableServiceImplTest {
 
 		List<String> mockNames = stubMockThreeKnownTableNames();
 
-		List<Table> tables = service.getTables();
+		List<Table> tables = service.getTables(Optional.empty());
 
 		assertCalledDatabaseServiceNothingElse();
 		assertHasExactlyThreeTables(tables);
@@ -56,7 +98,7 @@ public class TableServiceImplTest {
 	private void assertCalledDatabaseServiceNothingElse() {
 
 		verify(databaseService).getPublicTableNames();
-		verifyNoMoreInteractions(databaseService, dataSource);
+		verifyNoMoreInteractions(databaseService, queryService);
 	}
 
 	private void assertHasExactlyThreeTables(List<Table> tables) {
@@ -77,11 +119,11 @@ public class TableServiceImplTest {
 
 		List<String> mockNames = stubMockThreeKnownTableNames();
 		List<Table> tables = service.getTables(Optional.of("bar"));
-		
+
 		assertCalledDatabaseServiceNothingElse();
 		assertHasExactlyThreeTables(tables);
 		assertHasTablesWithExpectedNames(mockNames, tables);
-		
+
 		assertTrue("No table selected", tables.stream().anyMatch((t) -> "selected".equals(t.selected)));
 	}
 

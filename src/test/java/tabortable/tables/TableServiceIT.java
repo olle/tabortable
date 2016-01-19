@@ -21,7 +21,7 @@ public class TableServiceIT extends DbSetupTeardown {
 	@Test
 	public void ensureReturnsDefaultTableWithKnownNumberOfRows() {
 
-		Table defaultTable = tableService.getDefaultTable();
+		Table defaultTable = tableService.findFirstTable().get();
 
 		assertEquals("Wrong table name", "DEPARTMENTS", defaultTable.name);
 		assertEquals("Wrong amount of rows", 9, defaultTable.getRows().size());

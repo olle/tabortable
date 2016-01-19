@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Arrays;
 import java.util.Optional;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,14 +41,14 @@ public class IndexTest {
 		Table t2 = new Table("bar", false);
 		Table t3 = new Table("baz", false);
 		
-		when(tableService.getTables()).thenReturn(Arrays.asList(t1, t2, t3));
-		when(tableService.getDefaultTable()).thenReturn(t1);
+		when(tableService.getTables(any())).thenReturn(Arrays.asList(t1, t2, t3));
+		when(tableService.findFirstTable()).thenReturn(Optional.of(t1));
 
 		mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(model().attributeExists("tables", "table"))
 				.andExpect(view().name("index"));
 
 		verify(tableService).getTables(Optional.empty());
-		verify(tableService).getDefaultTable();
+		verify(tableService).findFirstTable();
 	}
 
 	@Test
@@ -57,14 +58,14 @@ public class IndexTest {
 		Table t2 = new Table("bar", true);
 		Table t3 = new Table("baz", false);
 		
-		when(tableService.getTables()).thenReturn(Arrays.asList(t1, t2, t3));
-		when(tableService.getTable(anyString())).thenReturn(t2);
+		when(tableService.getTables(any())).thenReturn(Arrays.asList(t1, t2, t3));
+		when(tableService.findTable(anyString())).thenReturn(Optional.of(t2));
 
 		mockMvc.perform(get("/").param("t", "some-table")).andExpect(status().isOk())
 				.andExpect(model().attributeExists("table", "tables")).andExpect(view().name("index"));
 
 		verify(tableService).getTables(Optional.of("some-table"));
-		verify(tableService).getTable("some-table");
+		verify(tableService).findTable("some-table");
 
 	}
 

@@ -1,23 +1,18 @@
 package tabortable.tables;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import javax.sql.DataSource;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import tabortable.database.DatabaseService;
+import tabortable.query.QueryService;
 
 /**
  * Simple service implementation, providing table listing and querying.
@@ -27,20 +22,31 @@ class TableServiceImpl implements TableService {
 
 	private final static Logger LOG = LoggerFactory.getLogger(TableServiceImpl.class);
 
-	private final DataSource dataSource;
 	private final DatabaseService databaseService;
+	private final QueryService queryService;
 
 	@Autowired
-	public TableServiceImpl(DataSource dataSource, DatabaseService databaseService) {
+	public TableServiceImpl(DatabaseService databaseService, QueryService queryService) {
 
-		this.dataSource = dataSource;
 		this.databaseService = databaseService;
+		this.queryService = queryService;
 	}
 
 	@Override
-	public List<Table> getTables() {
+	public Optional<Table> findFirstTable() {
 
-		return getTables(Optional.empty());
+		return findAndMap(ts -> ts.findFirst());
+	}
+
+	private Optional<Table> findAndMap(Function<Stream<Table>, Optional<Table>> streamFindOperation) {
+
+		return streamFindOperation.apply(getTables(Optional.empty()).stream()).map(queryService::selectAsteriskFrom);
+	}
+
+	@Override
+	public Optional<Table> findTable(String byName) {
+
+		return findAndMap(ts -> ts.filter(t -> byName.equals(t.name)).findFirst());
 	}
 
 	@Override
@@ -51,65 +57,6 @@ class TableServiceImpl implements TableService {
 			LOG.debug("Found {}", table);
 			return table;
 		}).collect(Collectors.toList());
-	}
-
-	@Override
-	public Table getDefaultTable() {
-
-		final Table table = getTables().get(0);
-		populate(table);
-		return table;
-	}
-
-	private void populate(final Table table) {
-		new JdbcTemplate(dataSource).query("SELECT * FROM " + table.name + " LIMIT 100", (rs) -> {
-			ResultSetMetaData metaData = rs.getMetaData();
-			int columnCount = metaData.getColumnCount();
-			readRows(rs, metaData, columnCount, table);
-			readColumns(metaData, columnCount, table);
-		});
-	}
-
-	private void readRows(ResultSet rs, ResultSetMetaData metaData, int columns, Table table) {
-		try {
-			do {
-				List<List<Object>> cols = new ArrayList<>();
-				for (int i = 1; i <= columns; i++) {
-					String columnName = metaData.getColumnName(i);
-					String columnTypeName = metaData.getColumnTypeName(i);
-					Object value = rs.getObject(i);
-					cols.add(Arrays.asList(columnName, columnTypeName, value));
-				}
-				table.addRow(cols);
-			} while (rs.next());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	private void readColumns(ResultSetMetaData metaData, int columns, Table table) {
-
-		try {
-			for (int i = 1; i <= columns; i++) {
-				String columnName = metaData.getColumnName(i);
-				String columnTypeName = metaData.getColumnTypeName(i);
-				table.addColumn(columnName, columnTypeName);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	@Override
-	public Table getTable(String name) {
-
-		final Table table = getTables().stream().filter((t) -> name.equals(t.name)).findFirst()
-				.orElseThrow(() -> new RuntimeException(String.format("No table called '%s' found.", name)));
-		populate(table);
-		return table;
 	}
 
 }
