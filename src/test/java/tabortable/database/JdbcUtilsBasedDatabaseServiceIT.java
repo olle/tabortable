@@ -12,9 +12,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import tabortable.DbSetupTeardown;
-import tabortable.Application;
+import tabortable.TaborTable;
 
-@ContextConfiguration(classes = Application.class)
+@ContextConfiguration(classes = TaborTable.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 public class JdbcUtilsBasedDatabaseServiceIT extends DbSetupTeardown {
 

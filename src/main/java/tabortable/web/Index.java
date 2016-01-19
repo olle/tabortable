@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import tabortable.tables.TableService;
 
+/**
+ * Provides end-points and handlers for the index web page.
+ */
 @Controller
 public class Index {
 

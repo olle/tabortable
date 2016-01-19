@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Representing a database table, either in detached or populated mode,
+ * referencing it's current query header, rows and columns.
+ */
 public class Table {
 
 	public final String name;
 	public final String selected;
+
 	private List<Row> rows = new ArrayList<>();
 	private List<Column> header = new ArrayList<>();
 
@@ -36,9 +41,13 @@ public class Table {
 
 	/**
 	 * Retrieves the value from the given object list by index
-	 * @param objects holding the values to retrieve
-	 * @param index of the value to fetch
-	 * @return the value as returned by a call {@code toString}, or the string {@code "null"}.
+	 * 
+	 * @param objects
+	 *            holding the values to retrieve
+	 * @param index
+	 *            of the value to fetch
+	 * @return the value as returned by a call {@code toString}, or the string
+	 *         {@code "null"}.
 	 */
 	public static String getValueOrNullAsString(List<Object> objects, int index) {
 		return objects.get(index) == null ? "null" : objects.get(index).toString();
