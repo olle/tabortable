@@ -1,14 +1,16 @@
 package tabortable.web;
 
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,12 +42,13 @@ public class IndexTest {
 		Table t1 = new Table("foo", false);
 		Table t2 = new Table("bar", false);
 		Table t3 = new Table("baz", false);
-		
-		when(tableService.getTables(any())).thenReturn(Arrays.asList(t1, t2, t3));
+		List<Table> tables = Arrays.asList(t1, t2, t3);
+
+		when(tableService.getTables(any())).thenReturn(tables);
 		when(tableService.findFirstTable()).thenReturn(Optional.of(t1));
 
-		mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(model().attributeExists("tables", "table"))
-				.andExpect(view().name("index"));
+		mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(model().attribute("table", t1))
+				.andExpect(model().attribute("tables", tables)).andExpect(view().name("index"));
 
 		verify(tableService).getTables(Optional.empty());
 		verify(tableService).findFirstTable();
@@ -57,7 +60,7 @@ public class IndexTest {
 		Table t1 = new Table("foo", false);
 		Table t2 = new Table("bar", true);
 		Table t3 = new Table("baz", false);
-		
+
 		when(tableService.getTables(any())).thenReturn(Arrays.asList(t1, t2, t3));
 		when(tableService.findTable(anyString())).thenReturn(Optional.of(t2));
 
@@ -67,6 +70,19 @@ public class IndexTest {
 		verify(tableService).getTables(Optional.of("some-table"));
 		verify(tableService).findTable("some-table");
 
+	}
+	
+	@Test
+	public void ensureThrowsOnMissingTables() throws Exception {
+		
+		when(tableService.getTables(any())).thenReturn(Collections.emptyList());
+		when(tableService.findTable(anyString())).thenReturn(Optional.empty());
+		
+		mockMvc.perform(get("/").param("t", "missing-table")).andExpect(status().isNotFound());
+		
+		verify(tableService).getTables(any());
+		verify(tableService).findTable("missing-table");
+		
 	}
 
 }

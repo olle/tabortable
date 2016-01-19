@@ -27,12 +27,12 @@ public class Index {
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String index(@RequestParam(name = "t", required = false) String table, Model model) {
-
-		final Optional<String> maybeSelected = Optional.ofNullable(table);
-
-		model.addAttribute("tables", tableService.getTables(maybeSelected));
 		
-		model.addAttribute("table", maybeSelected.map(tableService::findTable).orElseGet(tableService::findFirstTable));
+		final Optional<String> maybeSelected = Optional.ofNullable(table);
+		
+		model.addAttribute("tables", tableService.getTables(maybeSelected));		
+		model.addAttribute("table", maybeSelected.map(tableService::findTable).orElseGet(tableService::findFirstTable)
+				.orElseThrow(() -> new TableNotFoundException(maybeSelected)));
 
 		return "index";
 	}
