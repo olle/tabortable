@@ -1,7 +1,16 @@
 
-#spring:
+spring:
+  cache:
+    cache-names: table-names,tables
+    guava:
+      spec: maximumSize=200,expireAfterAccess=600s
 #  datasource:
-#   TODO: Specify your datasource here!
+#    # TODO: Specify your datasource here!
+#    url: jdbc:mysql://33.33.33.1:3306/logicpro
+#    driver-class-name: com.mysql.jdbc.Driver
+#    username: root
+#    password: root
+
 ---
 
 spring:

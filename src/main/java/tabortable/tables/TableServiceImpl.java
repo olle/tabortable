@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import tabortable.database.DatabaseService;
@@ -50,6 +51,7 @@ class TableServiceImpl implements TableService {
 	}
 
 	@Override
+	@Cacheable("tables")
 	public List<Table> getTables(final Optional<String> maybeSelectedTable) {
 
 		return databaseService.getPublicTableNames().stream().map(n -> {

@@ -12,6 +12,8 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.DatabaseMetaDataCallback;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.MetaDataAccessException;
@@ -32,16 +34,49 @@ class JdbcUtilsBasedDatabaseService implements DatabaseService {
 	private static final String[] NO_FILTERS = null;
 
 	private final DataSource dataSource;
+	private final JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	public JdbcUtilsBasedDatabaseService(DataSource dataSource) {
+	public JdbcUtilsBasedDatabaseService(DataSource dataSource, JdbcTemplate jdbcTemplate) {
 
 		this.dataSource = dataSource;
+		this.jdbcTemplate = jdbcTemplate;
 	}
 
 	@Override
+	@Cacheable("table-names")
 	public List<String> getPublicTableNames() {
 
+		LOG.info("Fetching list of all current tables");
+		
+		List<String> tableNames = new ArrayList<>();
+		
+		tableNames = getTableNamesFromShowTablesQuery();
+		
+		if (tableNames.isEmpty()) {
+			LOG.debug("No table names found, trying meta data query");
+			tableNames = getTableNamesFromDatabaseMetaData();
+		}
+				
+		LOG.info("Found {} public tables", tableNames.size());		
+		
+		return Collections.unmodifiableList(tableNames);
+	}
+
+	private List<String> getTableNamesFromShowTablesQuery() {
+		
+		final List<String> results = new ArrayList<>();
+		
+		jdbcTemplate.query("SHOW TABLES", (r) -> {
+			results.add(r.getString(1));
+		});
+		
+		LOG.debug("Found {} public tables through show tables query", results.size());
+		
+		return results;
+	}
+
+	private List<String> getTableNamesFromDatabaseMetaData() {
 		try {
 
 			final List<String> results = new ArrayList<>();
@@ -63,9 +98,9 @@ class JdbcUtilsBasedDatabaseService implements DatabaseService {
 				}
 			});
 
-			LOG.debug("Found {} public tables", results.size());
+			LOG.debug("Found {} public tables through meta-data", results.size());
 
-			return Collections.unmodifiableList(results);
+			return results;
 
 		} catch (Exception e) {
 			throw new DatabaseServiceException("Unable to fetch table names", e);

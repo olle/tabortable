@@ -18,8 +18,8 @@ import tabortable.TaborTable;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class JdbcUtilsBasedDatabaseServiceIT extends DbSetupTeardown {
 
-	@Autowired()
-	JdbcUtilsBasedDatabaseService databaseService;
+	@Autowired
+	DatabaseService databaseService;
 
 	@Test
 	public void ensureHasKnownListOfTableNames() {
