@@ -39,7 +39,7 @@
       <thead>
         <tr>
           {{#columns}}
-          <th>{{name}}</th>
+          <th title="{{name}}">{{name}}</th>
           {{/columns}}
         </tr>
       </thead>
@@ -47,7 +47,7 @@
         {{#rows}}
         <tr>
           {{#columns}}
-          <td data-label="{{name}}" class="{{type.toLowerCase}}">{{{value}}}</td>
+          <td data-label="{{name}}" class="{{type.toLowerCase}}" title="{{value}}">{{{value}}}</td>
           {{/columns}}
         </tr>
         {{/rows}}

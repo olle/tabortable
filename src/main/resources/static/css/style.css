@@ -145,6 +145,29 @@ main > table th {
   font-weight: 500;
 }
 
+/* Even more adaptive font-size, based on column count. */
+
+main > table.m {
+  font-size: 0.89em;
+}
+
+main > table.l {
+  font-size: 0.74em;
+}
+
+main > table.xl {
+  font-size: 0.69em;
+}
+
+main > table.xxl {
+  font-size: 0.41em;
+}
+
+main > table.xxxl {
+  font-size: 0.33em;
+}
+
+
 /* Responsive table, for small viewports
    Based on a Code Pen by Captain Anonymous
    http://codepen.io/anon/pen/QwPVNW */
