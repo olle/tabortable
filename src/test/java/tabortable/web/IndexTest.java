@@ -84,5 +84,12 @@ public class IndexTest {
 		verify(tableService).findTable("missing-table");
 		
 	}
+	
+	@Test
+	public void ensureHandlesTableSelectionPost() throws Exception {
+		
+		mockMvc.perform(post("/")).andExpect(status().isOk());
+		
+	}
 
 }
