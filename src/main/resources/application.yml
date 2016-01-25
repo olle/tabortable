@@ -10,6 +10,12 @@ spring:
     #username: user
     #password: pwd
 
+shell:
+  disabled-commands: >-
+    jpa*,jdbc*,jndi*,cron*,dashboard*,date*,egrep*,env*,filter*,java*,jvm*,
+    jul*,less*,mail*,man*,shell*,sleep*,sort*,system*,thread*,jmx*,autoconfig*,
+    beans*,endpoint*,metrics*
+
 ---
 
 # Temporary development profile
