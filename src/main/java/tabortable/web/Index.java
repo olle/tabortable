@@ -7,8 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import tabortable.tables.Table;
 import tabortable.tables.TableService;
 
 /**
@@ -26,21 +27,27 @@ public class Index {
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String index(@RequestParam(name = "t", required = false) String table, Model model) {
+	public String index(Model model) {
+		
+		if (!model.containsAttribute("table")) {
+			Table t = tableService.findFirstTable().orElseThrow(() -> new TableNotFoundException(Optional.empty()));
+			model.addAttribute("table", t);
+			model.addAttribute("selected", t.name);
+		}
 
-		final Optional<String> maybeSelected = Optional.ofNullable(table);
-
-		model.addAttribute("tables", tableService.getTables(maybeSelected));
-		model.addAttribute("table", maybeSelected.map(tableService::findTable).orElseGet(tableService::findFirstTable)
-				.orElseThrow(() -> new TableNotFoundException(maybeSelected)));
+		model.addAttribute("tables", tableService.getTables(Optional.empty()));
 
 		return "index";
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public String selectTable() {
+	public String selectTable(String table, RedirectAttributes redirectAttributes) {
 
-		return "foobar";
+		Table t = tableService.findTable(table).orElseGet(() -> tableService.findFirstTable().get());
+
+		redirectAttributes.addFlashAttribute("table", t);
+
+		return "redirect:/";
 	}
 
 }

@@ -23,8 +23,8 @@
   <section>
     <ul>
       <li>
-        <form>
-          <select name="t" onchange="this.form.submit();">
+        <form method="post">
+          <select name="table" onchange="this.form.submit();">
             {{#tables}}
             <option {{selected}}>{{name}}</option>
             {{/tables}}

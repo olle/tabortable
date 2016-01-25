@@ -2,13 +2,14 @@
   'use strict';
 
   var _toggleDayNight = function() {
-    var checked = $global.document.querySelector('input.tgl').checked;
+    var $toggle = $global.document.querySelector('input.tgl');
+    var checked = ($toggle && $toggle.checked) || false;
     $global.document.querySelector('body').setAttribute('class', checked ? 'night' : 'day');
   };
 
   var _adaptTableFontSize = function () {
     var $table = $global.document.querySelector('table');
-    var cols = $table.getAttribute('data-columns') || 0;
+    var cols = ($table && $table.getAttribute('data-columns')) || 0;
 
     var colsClass = '';
     if (cols > 22) {
@@ -20,8 +21,8 @@
     } else if (cols > 5) {
       colsClass = 'm';
     }
-    
-    $table.className = ($table.className + ' ' + colsClass).trim();
+
+    $table && ($table.className = ($table.className + ' ' + colsClass).trim());
   };
 
   // Public API
@@ -31,7 +32,7 @@
 
   /* Automatically set day/night checkbox based on hour of day. */
   (function (hour) {
-    $global.document.querySelector('input.tgl').checked = hour < 5 || hour > 17;
+    ($global.document.querySelector('input.tgl') || {}).checked = hour < 5 || hour > 17;
   })(new Date().getHours());
 
   /* Triggering initial toggle on load, will reset the mode based on checkbox

@@ -1,13 +1,11 @@
 package tabortable.web;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,42 +52,32 @@ public class IndexTest {
 		verify(tableService).findFirstTable();
 	}
 
+
 	@Test
-	public void ensureHandlesTableParameter() throws Exception {
+	public void ensureHandlesTableSelectionPostForTableFound() throws Exception {
 
-		Table t1 = new Table("foo", false);
-		Table t2 = new Table("bar", true);
-		Table t3 = new Table("baz", false);
+		Table table = new Table("some-table", false);
+		when(tableService.findTable(anyString())).thenReturn(Optional.of(table));
 
-		when(tableService.getTables(any())).thenReturn(Arrays.asList(t1, t2, t3));
-		when(tableService.findTable(anyString())).thenReturn(Optional.of(t2));
+		mockMvc.perform(post("/").param("table", "some-table")).andExpect(redirectedUrl("/"))
+				.andExpect(flash().attribute("table", table));
 
-		mockMvc.perform(get("/").param("t", "some-table")).andExpect(status().isOk())
-				.andExpect(model().attributeExists("table", "tables")).andExpect(view().name("index"));
-
-		verify(tableService).getTables(Optional.of("some-table"));
 		verify(tableService).findTable("some-table");
-
 	}
-	
+
 	@Test
-	public void ensureThrowsOnMissingTables() throws Exception {
-		
-		when(tableService.getTables(any())).thenReturn(Collections.emptyList());
+	public void ensureHandlesTableSelectionPostForUnknownTable() throws Exception {
+
 		when(tableService.findTable(anyString())).thenReturn(Optional.empty());
 		
-		mockMvc.perform(get("/").param("t", "missing-table")).andExpect(status().isNotFound());
-		
-		verify(tableService).getTables(any());
-		verify(tableService).findTable("missing-table");
-		
+		Table table = new Table("some-table", false);
+		when(tableService.findFirstTable()).thenReturn(Optional.of(table));
+
+		mockMvc.perform(post("/").param("table", "other-table")).andExpect(redirectedUrl("/"))
+				.andExpect(flash().attribute("table", table));
+
+		verify(tableService).findTable("other-table");
+		verify(tableService).findFirstTable();
 	}
 	
-	@Test
-	public void ensureHandlesTableSelectionPost() throws Exception {
-		
-		mockMvc.perform(post("/")).andExpect(status().isOk());
-		
-	}
-
 }
