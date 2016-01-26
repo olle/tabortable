@@ -1,7 +1,10 @@
 package tabortable.tables;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -67,6 +70,17 @@ public class Table {
 	public String toString() {
 
 		return String.format("%s '%s' %s", getClass().getSimpleName(), name, selected);
+	}
+
+	public void forMapper(Consumer<Map<String, Object>> mapper) {
+
+		for (Row r : getRows()) {
+			Map<String, Object> m = new HashMap<>();
+			for (Column c : r.columns) {
+				m.putAll(c.asMap());
+			}
+			mapper.accept(m);
+		}
 	}
 
 }

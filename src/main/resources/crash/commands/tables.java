@@ -10,7 +10,7 @@ import tabortable.database.DatabaseService;
 
 public class tables extends BaseCommand {
 
-	@Usage("Displays the list of known table names")
+	@Usage("Displays the list of the currently known table names")
 	@Command
 	public Object main(@SuppressWarnings("rawtypes") InvocationContext ctx) {
 		return ((BeanFactory) ctx.getAttributes().get("spring.beanfactory")).getBean(DatabaseService.class)
