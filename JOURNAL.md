@@ -1,11 +1,9 @@
 Development Journal
 ===================
 
-** A diary of unforeseen events, dead-end ideas and life-sucking issues, caused
-by out-of-control circumstances and leaky abstractions; turtles - all the way
-down. **
+## A diary of unforeseen events, dead-end ideas and life-sucking issues, caused by out-of-control circumstances and leaky abstractions; turtles - all the way down. ##
 
-## 2016-02-08 - _The smell of a web framework_ ##
+### 2016-02-08 - _The smell of a web framework_ ##
 
 Oh man! I'm really getting the heebie-jeebies from Spring MVC's declarative
 wank-fest. Just added the `@SessionAttributes`-annotation to my controller, and
