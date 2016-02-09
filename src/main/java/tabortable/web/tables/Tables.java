@@ -1,6 +1,10 @@
 package tabortable.web.tables;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import tabortable.tables.TableService;
 import tabortable.web.SessionService;
@@ -19,6 +23,14 @@ public class Tables {
 		this.tableService = tableService;
 	}
 
-	// Tests first!
+	@RequestMapping(value = "/", method = RequestMethod.POST)
+	public String changeTableSelection(String table) {
+
+		if (tableService.hasTable(table)) {
+			sessionService.setSelectedTable(Optional.of(table));
+		}
+
+		return "redirect:/";
+	}
 
 }
