@@ -25,3 +25,14 @@ solution. I'm still in favor for the request mapping, and general utils for
 servlet handling - let's see if I can find some structure there, that's more
 transparent and better suited to plain-old-unit-testing. Imperative, service
 oriented MVC is, well _a bit sucky_. Till next time.
+
+### 2016-02-09 - _A New Hope_
+
+Well, at least _a new try_. I'm going at it again, top-down, and will try to
+keep to a clean constructor-injected, test-able, service structure - really,
+this is as vanilla as it gets.
+
+I'm trying out something a bit new, structurally separating Spring Controllers,
+by their functional responsibility. A controller for table selection, sorting
+etc and a minimal controller for index page requests. Curious to see how this
+turns out.
