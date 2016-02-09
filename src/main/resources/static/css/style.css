@@ -79,6 +79,15 @@ body.day .char:before {
   color: #536370;
 }
 
+/* Links, dude! */
+
+a,
+a:active,
+a:hover,
+a:visited {
+  color: inherit;
+}
+
 /* Main page layout */
 
 header,
